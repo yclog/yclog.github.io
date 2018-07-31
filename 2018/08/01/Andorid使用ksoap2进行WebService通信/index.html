@@ -1,0 +1,241 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="author" content="Flat White"><title>Andorid使用ksoap2进行WebService通信 · yclog</title><meta name="description" content="WebService 是一种基于SOAP协议的远程调用标准。通过WebService可以将不同操作系统平台，不同语言、不同技术整合到一起。在Android SDK中并没有提供调用WebService的库，因此，需要使用第三方类库（KSOAP2）来调用WebService。
+
+示例代码分为两部分，an"><meta name="keywords"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="renderer" content="webkit"><link rel="short icon" href="/images/favicon.png" type="image/x-icon"><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/blog_basic.css"><link rel="stylesheet" href="/css/font-awesome.min.css"><link rel="alternate" type="application/atom+xml" title="ATOM 1.0" href="/atom.xml"></head><body><div class="sidebar animated fadeInDown"><div class="logo-title"><div class="title"><img src="/images/logo@2x.png" style="width:127px;"><h3 title=""><a href="/">yclog</a></h3></div></div><ul class="social-links"></ul><div class="footer"><a target="_blank" href="/"><span>Theme by </span></a><a href="https://www.caicai.me"> CaiCai </a><span>&</span><a href="https://github.com/Ben02/hexo-theme-Anatole"> Ben</a><div class="by_farbox"><a href="https://hexo.io/zh-cn/" target="_blank">Proudly published with Hexo&#65281;</a></div></div></div><div class="main"><div class="page-top animated fadeInDown"><div class="nav"><li><a href="/">首页</a></li><li><a href="/about">关于</a></li><li><a href="/archives">归档</a></li><li><a href="/links">友链</a></li></div><div class="information"><div class="back_btn"><li><a class="fa fa-chevron-left" onclick="window.history.go(-1)"> </a></li></div><div class="avatar"><img></div></div></div><div class="autopagerize_page_element"><div class="content"><div class="post-page"><div class="post animated fadeInDown"><div class="post-title"><h3><a>Andorid使用ksoap2进行WebService通信</a></h3></div><div class="post-content"><blockquote>
+<p>WebService 是一种基于SOAP协议的远程调用标准。通过WebService可以将不同操作系统平台，不同语言、不同技术整合到一起。在Android SDK中并没有提供调用WebService的库，因此，需要使用第三方类库（KSOAP2）来调用WebService。</p>
+</blockquote>
+<p>示例代码分为两部分，android端与Web端（Android studio，VS2015）</p>
+<ul>
+<li><strong>Web端</strong></li>
+</ul>
+<blockquote>
+<p>使用VS创建一个新项目，选择Visual C# –&gt; web –&gt;ASP.NET Web应用程序，在资源管理器中打开后缀为.asmx文件进行修改</p>
+</blockquote>
+<p><strong>代码部分：</strong></p>
+<pre><code>namespace WebService1
+{
+    /// &lt;summary&gt;
+    /// WebService1 的摘要说明
+    /// &lt;/summary&gt;
+    [WebService(Namespace = &quot;http://tempuri.org/&quot;)]
+    [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
+    [System.ComponentModel.ToolboxItem(false)]
+    // 若要允许使用 ASP.NET AJAX 从脚本中调用此 Web 服务，请取消注释以下行。 
+    // [System.Web.Script.Services.ScriptService]
+    public class WebService1 : System.Web.Services.WebService
+    {
+
+        [WebMethod]
+        public string HelloWorld()
+        {
+            return &quot;Hello&quot;;
+        }
+        [WebMethod]
+        public string[] EchoMessage(string msg1,string msg2)
+        {
+            string []name = { msg1, msg2 };
+            return name;
+        }
+    }
+}
+</code></pre><ul>
+<li><strong>android端（在AndroidManifest文件中添加网络连接权限）</strong></li>
+</ul>
+<p>Android端demo分为三个文件:<strong>MainActivity.java</strong>,<strong>Nettask.java</strong>,<strong>Netsetting.java</strong></p>
+<pre>
+MainActivity.java:加载布局文件提高测试效果
+Nettask.java：Ksoap2包的使用，进行网络通信
+Netsetting.java：网络通信基本设置信息
+</pre>
+
+<p><strong>MainActivity.java主要代码展示:</strong></p>
+<pre><code>private void initBtn() {
+      //初始化按钮点击事件
+      View btnHelloWorld = this.findViewById(R.id.btnHelloWorld);
+      btnHelloWorld.setOnClickListener(new OnClickListener() {
+
+          @Override
+          public void onClick(View v) {
+
+              Map&lt;String, String&gt; values = new HashMap&lt;String, String&gt;();
+              //设置参数
+              values.put(&quot;msg&quot;, &quot;It&apos;s android data&quot;);
+              //发出请求
+              Request(mNetSetting.getMethod_Hello());
+          }
+      });
+
+      View btnEchoMessage = this.findViewById(R.id.btnEchoMessage);
+      btnEchoMessage.setOnClickListener(new OnClickListener() {
+          @Override
+          public void onClick(View v) {
+              Map&lt;String, String&gt; values = new HashMap&lt;String, String&gt;();
+              //设置参数
+              values.put(&quot;msg1&quot;, &quot;It&apos;s android data one&quot;);
+              values.put(&quot;msg2&quot;, &quot;It&apos;s android data two&quot;);
+              //发出请求
+              Request(mNetSetting.getMethod_Echo(), values);
+          }
+      });
+  }
+
+  /*
+  * Push Request for WebService
+  * 使用AsyncTask完成网络通信（直接放入主线程会直接报错）
+  */
+  public void Request(Object... params) {
+      new AsyncTask&lt;Object, Object, String&gt;() {
+          //Change the Textview content
+          String txt=new String();
+          @Override
+          protected String doInBackground(Object... params) {
+              if (params != null &amp;&amp; params.length == 2) {
+                  txt= mNetTask.Distribute_WebService((String) params[0],
+                          (Map&lt;String, String&gt;) params[1]);
+              } else if (params != null &amp;&amp; params.length == 1) {
+                  txt= mNetTask.Distribute_WebService((String) params[0], null);
+              } else {
+                  return null;
+              }
+              return null;
+          }
+
+          protected void onPostExecute(String result) {
+              //在主页面的Textview显示返回信息
+              tvMessage.setText(&quot;Information from Server : &quot; + txt);
+          };
+      }.execute(params);
+  }
+</code></pre><p><strong>Nettask.java代码展示:</strong></p>
+<pre><code>public class NetTask {
+
+    private NetSetting mNetSetting=new NetSetting();
+
+    //initialize the Method in Package &quot;ksoap2&quot; and get the object form SoapSerializationEnvelope
+    //初始化方法ksoap包中的方法（如果是单纯使用不需要明白下面的意思,类似一个模板的使用）
+    public SoapSerializationEnvelope DoGet(String MethodName, Map&lt;String, String&gt; Params){
+        // 1、Define the WebService Space name and Method
+        SoapObject request = new SoapObject(mNetSetting.getNamespace()  , MethodName);
+        //Set the Method&apos;s parameter if not exists then ignore it
+        //获取从MainActivity内的request方法中的参数，以及参数类型
+        if (Params != null) {
+            Iterator iter = Params.entrySet().iterator();
+            while (iter.hasNext()) {
+                Map.Entry entry = (Map.Entry) iter.next();
+                request.addProperty((String) entry.getKey(),
+                        (String) entry.getValue());
+            }
+        }
+        /*
+         *   3、Create and use Webservice method to generate soap request
+         *      parameter is the vserion name of Soap protocol and you can check it&apos;s Instructions to know it(eg:WebService1.asmx?WSDL)
+         *   3、创建并且使用Webservice方法产生请求
+         *      new SoapSerializationEnvelope(SoapEnvelope.VER12)方法中的VER12为soap协议的版本号
+         */
+        SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(
+                SoapEnvelope.VER12);
+        envelope.bodyOut = request;
+        // when you use donet protocol then use true
+        envelope.dotNet = true;
+        //envelope为WEBSERVICE传输内容
+        HttpTransportSE http = new HttpTransportSE(mNetSetting.getURL());
+        // use call() to connect Server
+        // call()方法实际为连接服务器
+        try {
+            http.call(null, envelope);
+        } catch (HttpResponseException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
+        }
+        return envelope;
+    }
+
+    //Change Method according to the MethodName
+    //根据请求选择不同的方法
+    public String Distribute_WebService(String MethodName, Map&lt;String, String&gt; Params){
+        if(MethodName.equals(mNetSetting.getMethod_Hello()))
+            return Hello_CallWebService(MethodName,Params);
+        else{
+            return Echo_CallWebService(MethodName,Params);
+        }
+    }
+
+
+    //Hello_CallWebService
+    public String Hello_CallWebService(String MethodName, Map&lt;String, String&gt; Params) {
+        SoapSerializationEnvelope envelope=DoGet(MethodName,Params);
+        try {
+            //单个数据选择SoapPrimitive
+            final SoapPrimitive result = (SoapPrimitive) envelope.getResponse();
+            if (result!= null) {
+                Log.d(&quot;----ReceivedMessage----&quot;, result.toString());
+                return result.toString();
+            }
+
+        } catch (SoapFault e) {
+            Log.e(&quot;----WrongMessage---&quot;, e.getMessage());
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    //Echo_CallWebService
+    public String Echo_CallWebService(String MethodName, Map&lt;String, String&gt; Params) {
+        SoapSerializationEnvelope envelope=DoGet(MethodName,Params);
+        try{
+            //复杂数据选择SoapObject
+            final SoapObject result = (SoapObject) envelope.getResponse();
+            if (result!= null) {
+                //通过使用getProperty()方法可以实现调用传输过来的方法
+                Log.d(&quot;----ReceivedMessage----&quot;, result.getProperty(0).toString());
+                Log.d(&quot;----ReceivedMessage----&quot;, result.getProperty(1).toString());
+                return result.toString();
+            }
+
+        } catch (SoapFault e) {
+            Log.e(&quot;----WrongMessage---&quot;, e.getMessage());
+            e.printStackTrace();
+        }
+        return null;
+    }
+}
+</code></pre><p><strong>Netsetting.java:</strong></p>
+<pre><code>public class NetSetting {
+
+    public NetSetting(){};
+
+    //Method Name 值与Web端相应方法的值必须保持一致
+    final String METHOD_HELLO_WORLD = &quot;HelloWorld&quot;;
+    final String METHOD_ECHO_MESSAGE = &quot;EchoMessage&quot;;
+
+    //Server Url
+    final String WEB_SERVICE_URL = &quot;http://ip/WebService1.asmx&quot;;
+    //WebService Space Name
+    final String Namespace = &quot;http://tempuri.org/&quot;;
+    //Get Space Name
+    public String getNamespace(){
+        return Namespace;
+    }
+    //Get WebService Url
+    public String getURL(){
+        return WEB_SERVICE_URL;
+    }
+    //Get Mthod Name &quot;HelloWorld&quot;
+    public String getMethod_Hello(){
+        return METHOD_HELLO_WORLD;
+    }
+    //Get Mthod Name &quot;EchoMessage&quot;
+    public String getMethod_Echo(){
+        return METHOD_ECHO_MESSAGE;
+    }
+}
+</code></pre><blockquote>
+<p>这里为全代码的demo地址<br><a href="http://download.csdn.net/detail/enough_empty/9628832" target="_blank" rel="noopener">http://download.csdn.net/detail/enough_empty/9628832</a><br>git 地址<br><a href="https://github.com/yclog/ksoap2-webservice-demo" target="_blank" rel="noopener">https://github.com/yclog/ksoap2-webservice-demo</a></p>
+</blockquote>
+<blockquote>
+<p>参考博客<br>还是你最好:<a href="http://www.cnblogs.com/gzggyy/archive/2011/06/21/2086140.html" target="_blank" rel="noopener">http://www.cnblogs.com/gzggyy/archive/2011/06/21/2086140.html</a></p>
+</blockquote>
+<p><strong>Ps:博主使用了各种手段设置WEB_SERVICE_URL中的IP都以android端连接失败告终，最后因为时间关系强行将web服务发布到服务器上，才解决了这个问题<br>之前尝试改为<a href="http://10.0.2.2/WebService1.asmx" target="_blank" rel="noopener">http://10.0.2.2/WebService1.asmx</a> 仍旧存在问题，如果有博友在本地成功希望能留下评论交流，谢谢</strong> </p>
+</div><div class="post-footer"><div class="meta"><div class="info"><i class="fa fa-sun-o"></i><span class="date">2018-08-01</span><i class="fa fa-tag"></i></div></div></div></div><div class="share"><div class="evernote"><a class="fa fa-bookmark" href="javascript:(function(){EN_CLIP_HOST='http://www.evernote.com';try{var%20x=document.createElement('SCRIPT');x.type='text/javascript';x.src=EN_CLIP_HOST+'/public/bookmarkClipper.js?'+(new%20Date().getTime()/100000);document.getElementsByTagName('head')[0].appendChild(x);}catch(e){location.href=EN_CLIP_HOST+'/clip.action?url='+encodeURIComponent(location.href)+'&amp;title='+encodeURIComponent(document.title);}})();" ref="nofollow" target="_blank"></a></div><div class="weibo"><a class="fa fa-weibo" href="javascript:void((function(s,d,e){try{}catch(e){}var f='http://service.weibo.com/share/share.php?',u=d.location.href,p=['url=',e(u),'&amp;title=',e(d.title),'&amp;appkey=2924220432'].join('');function a(){if(!window.open([f,p].join(''),'mb',['toolbar=0,status=0,resizable=1,width=620,height=450,left=',(s.width-620)/2,',top=',(s.height-450)/2].join('')))u.href=[f,p].join('');};if(/Firefox/.test(navigator.userAgent)){setTimeout(a,0)}else{a()}})(screen,document,encodeURIComponent));"></a></div><div class="twitter"><a class="fa fa-twitter" href="http://twitter.com/home?status=,yclog.github.io/2018/08/01/Andorid使用ksoap2进行WebService通信/,yclog,Andorid使用ksoap2进行WebService通信,;"></a></div></div><div class="pagination"><ul class="clearfix"><li class="pre pagbuttons"><a class="btn" role="navigation" href="/2018/08/01/Android基础之Intent篇/" title="Android基础之Intent篇">上一篇</a></li><li class="next pagbuttons"><a class="btn" role="navigation" href="/2018/07/31/centos-wordpress搭建博客/" title="centos+wordpress搭建博客">下一篇</a></li></ul></div></div></div></div></div><script src="/js/jquery.js"></script><script src="/js/jquery-migrate-1.2.1.min.js"></script><script src="/js/jquery.appear.js"></script><script async>window.onload=function(){var a=document.createElement('script'),b=document.getElementsByTagName('script')[0];a.type='text/javascript',a.async=!0,a.src='/sw-register.js?v='+Date.now(),b.parentNode.insertBefore(a,b)};</script></body></html>

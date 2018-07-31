@@ -1,0 +1,38 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="author" content="Flat White"><title>centos+wordpress搭建博客 · yclog</title><meta name="description" content="此教程使用wordpress（世界上最大的博客系统）搭建网站。相信即便是小白也能搭建出自己喜欢的网站。
+要搭建自己的博客网站，首先要进行购买vps，如果打算用服务器顺带搭建VPN的话可以使用国外服务器进行搭建博客，国内最好的云服务提供商是阿里云，费用略贵一些，但安全性以及性能来说都是其他几家不能达到"><meta name="keywords"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="renderer" content="webkit"><link rel="short icon" href="/images/favicon.png" type="image/x-icon"><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/blog_basic.css"><link rel="stylesheet" href="/css/font-awesome.min.css"><link rel="alternate" type="application/atom+xml" title="ATOM 1.0" href="/atom.xml"></head><body><div class="sidebar animated fadeInDown"><div class="logo-title"><div class="title"><img src="/images/logo@2x.png" style="width:127px;"><h3 title=""><a href="/">yclog</a></h3></div></div><ul class="social-links"></ul><div class="footer"><a target="_blank" href="/"><span>Theme by </span></a><a href="https://www.caicai.me"> CaiCai </a><span>&</span><a href="https://github.com/Ben02/hexo-theme-Anatole"> Ben</a><div class="by_farbox"><a href="https://hexo.io/zh-cn/" target="_blank">Proudly published with Hexo&#65281;</a></div></div></div><div class="main"><div class="page-top animated fadeInDown"><div class="nav"><li><a href="/">首页</a></li><li><a href="/about">关于</a></li><li><a href="/archives">归档</a></li><li><a href="/links">友链</a></li></div><div class="information"><div class="back_btn"><li><a class="fa fa-chevron-left" onclick="window.history.go(-1)"> </a></li></div><div class="avatar"><img></div></div></div><div class="autopagerize_page_element"><div class="content"><div class="post-page"><div class="post animated fadeInDown"><div class="post-title"><h3><a>centos+wordpress搭建博客</a></h3></div><div class="post-content"><p>此教程使用wordpress（世界上最大的博客系统）搭建网站。相信即便是小白也能搭建出自己喜欢的网站。</p>
+<p>要搭建自己的博客网站，首先要进行购买vps，如果打算用服务器顺带搭建VPN的话可以使用国外服务器进行搭建博客，国内最好的云服务提供商是阿里云，费用略贵一些，但安全性以及性能来说都是其他几家不能达到的。免费主机比较出名的有主机公园，注册即可以使用一年免费的云服务器。国外vps性能最好的是linode，不过需要visa卡进行注册购买，另一个性价比相当高的vps供应商是digital ocean，本供应商具有较多优惠，获取优惠链接<a href="http://blog.csdn.net/enough_empty/article/details/51334963" target="_blank" rel="noopener">digital ocean</a></p>
+<p>国内购买域名主要有新网与万网两个大型域名购买网站， 但购买域名需要备案，故推荐<a href="https://sg.godaddy.com/zh/，全球最大域名网站，现在也支持支付宝付账了，一个.com域名价格大概在50RMB左右，不过需要使用godaddy的优惠券，这些都是很容易在网上找到的。" target="_blank" rel="noopener">https://sg.godaddy.com/zh/，全球最大域名网站，现在也支持支付宝付账了，一个.com域名价格大概在50RMB左右，不过需要使用godaddy的优惠券，这些都是很容易在网上找到的。</a></p>
+<p>godaddy提供的域名服务器没有放置在国内，有可能会被查封dns无法解析域名，推荐使用dnspod进行域名解析。<br><img src="http://img.blog.csdn.net/20160418161400646" alt="这里写图片描述"></p>
+<p>解析域名之后，添加自有服务器的IP，选择@主机记录</p>
+<p><img src="http://img.blog.csdn.net/20160418161827685" alt="这里写图片描述"></p>
+<p>设置好IP之后进入godaddy的dns管理页面更改原有域名服务器即可</p>
+<p><img src="http://img.blog.csdn.net/20160418162001359" alt="这里写图片描述"></p>
+<p><strong>接下来对vps进行操作</strong></p>
+<p><strong>1.使用yum安装 mysql、apache、php</strong></p>
+<p>登陆你的linux系统，在shell窗口输入以下命令：</p>
+<p>yum -y install mysql-server httpd php php-mysql unzip wget</p>
+<p>添加mysql、apache服务</p>
+<p>chkconfig httpd on<br>chkconfig mysqld on</p>
+<p>启动服务</p>
+<p>service mysqld start<br>service httpd start</p>
+<p><strong>2. 为wordpress创建数据库、用户名</strong></p>
+<p>设置mysql root 密码 执行/usr/bin/mysql_secure_installation，按提示完成操作，设置root密码等</p>
+<p>登录mysql：mysql -uroot -p</p>
+<p>创建WordPress数据库：CREATE DATABASE wordpress;</p>
+<p>创建WordPress用户： GRANT ALL PRIVILEGES ON <em>.</em> TO ‘用户名‘@localhost IDENTIFIED BY ‘用户密码’ WITH GRANT OPTION;   </p>
+<p>FLUSH   PRIVILEGES; </p>
+<p>刷新：FLUSH PRIVILEGES;</p>
+<p>退出mysql：\q</p>
+<p><strong>3. 下载wordpress跟安装</strong></p>
+<p>cd /var/www/html</p>
+<p>wget <a href="https://cn.wordpress.org/wordpress-4.5-zh_CN.zip（以后的版本可以去wordpress网站去找安装的下载连接即可）" target="_blank" rel="noopener">https://cn.wordpress.org/wordpress-4.5-zh_CN.zip（以后的版本可以去wordpress网站去找安装的下载连接即可）</a><br><img src="http://img.blog.csdn.net/20160418163023591" alt="这里写图片描述"></p>
+<p>unzip wordpress-3.6.1zh_CN.zip<br>设置WordPress根目录owner<br>chown -R apache:apache wordpress<br><strong>将cd /var/www/html/wordpress内的所有文件移动到cd /var/www/html文件夹下</strong></p>
+<p><strong>4. 配置wordpress</strong><br>cd /var/www/html  cp wp-config-sample.php    wp-config.php    </p>
+<p>vi wp-config.php加入一行：<br>define(‘FS_METHOD’, ‘direct’); （WP后台直接操作文件，不通过FTP）</p>
+<p>define(‘DB_NAME’, ‘database_name_here’);（database_name_here 换成 wordpress）<br>define(‘DB_USER’, ‘username_here’);（username_here 换成 wordpress）<br>define(‘DB_PASSWORD’, ‘password_here’);（password_here 换成 上面设置的 wordpress_password）</p>
+<p>进入WordPress后台管理</p>
+<p><a href="http://your-server-ip-or-hostname/wp-admin/install.php，进入这个页面进行安装，安装完毕后就能进去后台对博客系统进行管理了，如安装主题、插件等" target="_blank" rel="noopener">http://your-server-ip-or-hostname/wp-admin/install.php，进入这个页面进行安装，安装完毕后就能进去后台对博客系统进行管理了，如安装主题、插件等</a></p>
+<p><a href="http://your-server-ip" target="_blank" rel="noopener">http://your-server-ip</a> 如果能进入这个页面表面你的wordpress博客系统已经成功搭建了</p>
+<p>参考博客：<br>软件开发程序员博客文章收藏网：<a href="http://www.programgo.com/article/1874486129/" target="_blank" rel="noopener">http://www.programgo.com/article/1874486129/</a><br>季枫：<a href="http://www.cnblogs.com/jifeng/archive/2011/03/06/1972183.html" target="_blank" rel="noopener">http://www.cnblogs.com/jifeng/archive/2011/03/06/1972183.html</a></p>
+<p>欢迎各位朋友对以上内容提出问题</p>
+</div><div class="post-footer"><div class="meta"><div class="info"><i class="fa fa-sun-o"></i><span class="date">2018-07-31</span><i class="fa fa-tag"></i></div></div></div></div><div class="share"><div class="evernote"><a class="fa fa-bookmark" href="javascript:(function(){EN_CLIP_HOST='http://www.evernote.com';try{var%20x=document.createElement('SCRIPT');x.type='text/javascript';x.src=EN_CLIP_HOST+'/public/bookmarkClipper.js?'+(new%20Date().getTime()/100000);document.getElementsByTagName('head')[0].appendChild(x);}catch(e){location.href=EN_CLIP_HOST+'/clip.action?url='+encodeURIComponent(location.href)+'&amp;title='+encodeURIComponent(document.title);}})();" ref="nofollow" target="_blank"></a></div><div class="weibo"><a class="fa fa-weibo" href="javascript:void((function(s,d,e){try{}catch(e){}var f='http://service.weibo.com/share/share.php?',u=d.location.href,p=['url=',e(u),'&amp;title=',e(d.title),'&amp;appkey=2924220432'].join('');function a(){if(!window.open([f,p].join(''),'mb',['toolbar=0,status=0,resizable=1,width=620,height=450,left=',(s.width-620)/2,',top=',(s.height-450)/2].join('')))u.href=[f,p].join('');};if(/Firefox/.test(navigator.userAgent)){setTimeout(a,0)}else{a()}})(screen,document,encodeURIComponent));"></a></div><div class="twitter"><a class="fa fa-twitter" href="http://twitter.com/home?status=,yclog.github.io/2018/07/31/centos-wordpress搭建博客/,yclog,centos+wordpress搭建博客,;"></a></div></div><div class="pagination"><ul class="clearfix"><li class="pre pagbuttons"><a class="btn" role="navigation" href="/2018/08/01/Andorid使用ksoap2进行WebService通信/" title="Andorid使用ksoap2进行WebService通信">上一篇</a></li></ul></div></div></div></div></div><script src="/js/jquery.js"></script><script src="/js/jquery-migrate-1.2.1.min.js"></script><script src="/js/jquery.appear.js"></script><script async>window.onload=function(){var a=document.createElement('script'),b=document.getElementsByTagName('script')[0];a.type='text/javascript',a.async=!0,a.src='/sw-register.js?v='+Date.now(),b.parentNode.insertBefore(a,b)};</script></body></html>
