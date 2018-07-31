@@ -10,7 +10,7 @@
 
 'use strict';
 
-var precacheConfig = [];
+var precacheConfig = [["/2018/07/30/hello-world/index.html","be1c8748acb74eaf42f1cb5d92c8559a"],["/about/index.html","b66b143da728a59b05d00c56afa6cf10"],["/archives/index.html","441f3916511f2359b7243a4ed719a26a"],["/css/blog_basic.css","e4f4ad1ffad05043a705663fdb82dafa"],["/css/font-awesome.min.css","9497dc435d867b8ea4db811cefd98d32"],["/css/style.css","20277685ee4631efe1c1a04b4cce8768"],["/fonts/fontawesome-webfont.eot","7149833697a959306ec3012a8588dcfa"],["/fonts/fontawesome-webfont.svg","65bcbc899f379216109acd0b6c494618"],["/fonts/fontawesome-webfont.ttf","c4668ed2440df82d3fd2f8be9d31d07d"],["/fonts/fontawesome-webfont.woff","d95d6f5d5ab7cfefd09651800b69bd54"],["/images/favicon.png","d12c5d44bf4f476fefbb37301d28cffc"],["/images/logo.png","da1f4e8a3b07f423b53555eaa03f4d27"],["/images/logo@2x.png","50d9d6bebdba132bd9854ad142a1400c"],["/index.html","8e93a2d117356fc704fe2469a06bbc66"],["/js/jquery-migrate-1.2.1.min.js","eb05d8d73b5b13d8d84308a4751ece96"],["/js/jquery.appear.js","2cb12aa916a28633bc45c690f3d49edf"],["/js/jquery.js","f3346149a7173e70d39e6f36bfb178a4"],["/links/index.html","8a094b1de3353e552199c1869a7c63b5"],["/sw-register.js","74b7fbfe23668b3c968757d19b55221b"]];
 var cacheName = 'sw-precache-v3--' + (self.registration ? self.registration.scope : '');
 var firstRegister = 1; // 默认1是首次安装SW， 0是SW更新
 
