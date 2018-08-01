@@ -7,15 +7,8 @@ onCreate：在Acitivty第一次创建时调用，用于做初始化的工作onSt
 <p><strong>Note:</strong>（仍旧将任务栈中X前的实例全部取消）</p>
 <p>  对于singleTask作为启动模式的实例X，有选择其所需要的任务栈，例如本身主任务栈为S1,且当前任务栈中不存在X实例，若所需要的任务栈为S2，且任务栈S2不存在，则创建S2与X实例，并将实例X存入栈S2中<br>  另一种情况下，假设X所需的任务栈为S1，其他情况如上述例子所示，由于S1任务栈已经存在，所以系统会直接创建X的实例并将其导入栈S1中</p>
 <p><strong>设置启动模式方法：</strong></p>
-<p>第一种：</p>
-<pre><code>&lt;activity
-    android:name=&quot;com.sample.sampleActivity&quot;
-    android:launchMode=&quot;singleTask&quot;
-    android:label=&quot;@string/app_name&quot;/&gt;
-</code></pre><p>第二种：</p>
-<blockquote>
-</blockquote>
-<p>Intent intent=new Intent();<br>intent.setClass(MainActivity.this,sampleActivity.class);<br>intent.addFalgs(Intent.FLAG_ACTIVITY_NEW_TASK);<br>startActivity(intent);</p>
+<p>第一种：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;activity</span><br><span class="line">    android:name=<span class="string">"com.sample.sampleActivity"</span></span><br><span class="line">    android:launchMode=<span class="string">"singleTask"</span></span><br><span class="line">    android:label=<span class="string">"@string/app_name"</span>/&gt;</span><br></pre></td></tr></table></figure></p>
+<p>第二种：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Intent intent=<span class="keyword">new</span> Intent();</span><br><span class="line">intent.setClass(MainActivity.<span class="keyword">this</span>,sampleActivity.class);</span><br><span class="line">intent.addFalgs(Intent.FLAG_ACTIVITY_NEW_TASK);</span><br><span class="line">startActivity(intent);</span><br></pre></td></tr></table></figure></p>
 <p><strong>Notes:</strong> 第一种无法直接为Activity设定FALG_ACTIVITY_CLEAR_TOP表示，而第二种方式无法为Activity指定singleInstance模式</p>
 <h4 id="Activity的Flags"><a href="#Activity的Flags" class="headerlink" title="Activity的Flags"></a>Activity的Flags</h4><ul>
 <li>FALG_ACTIVITY_NEW_TASK（对应Activity的singletask启动模式）</li>
